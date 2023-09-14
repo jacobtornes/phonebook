@@ -27,7 +27,7 @@ export const getContacts = async (search) => {
   if (search) {
     filter = `&filter=contains(Info.Name',${search}')`
   }
-  fetchWithToken(`${API_BASE_URL}?expand=Info,Info.InvoiceAddress,Info.DefaultPhone,Info.DefaultEmail,Info.DefaultAddress&hateoas=false`);
+  return fetchWithToken(`${API_BASE_URL}?expand=Info,Info.InvoiceAddress,Info.DefaultPhone,Info.DefaultEmail,Info.DefaultAddress&hateoas=false${filter}`);
 }
 
 export const createContact = async (contact) =>
