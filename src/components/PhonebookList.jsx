@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { getContacts, deleteContact } from '../api';
+import SearchInput from './Search/SearchInput';
 
 const PhonebookList = ({ onSelectContact }) => {
   const [contacts, setContacts] = useState([]);
+  const [filteredContacts, setFilteredContacts] = useState([]);
+
+  const handleSearch = (query) => {
+    const filtered = contacts.filter(contact => {
+      return contact.Info.Name.toLowerCase().includes(query.toLowerCase());
+    });
+    setFilteredContacts(filtered);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,9 +34,7 @@ const PhonebookList = ({ onSelectContact }) => {
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <p className="mt-2 text-sm text-gray-700">
-            A list of all the contacts in the phonebook
-          </p>
+          <SearchInput onSearch={handleSearch}/>
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <button
@@ -59,7 +66,7 @@ const PhonebookList = ({ onSelectContact }) => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {contacts.map((contact) => (
+                {filteredContacts.map((contact) => (
                   <tr key={contact.ID}>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{contact.Info.Name}</td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{contact.Info.DefaultEmail.EmailAddress}</td>
