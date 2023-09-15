@@ -8,7 +8,10 @@ export default function SearchInput( {onSearch}) {
 
   const handleInputChange = (e) => {
     setQuery(e.target.value);
-    onSearch(e.target.value);
+  };
+
+  const handleSearchClick = () => {
+    onSearch(query);
   };
 
 
@@ -29,15 +32,16 @@ export default function SearchInput( {onSearch}) {
             value={query}
             onChange={handleInputChange}
             className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            placeholder="John Smith"
+            placeholder="John Doe"
           />
         </div>
         <button
           type="button"
+          onClick={handleSearchClick}
           className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
         >
           <BarsArrowUpIcon className="-ml-0.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-          Sort
+          Search
         </button>
       </div>
     </div>
