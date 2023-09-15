@@ -4,30 +4,26 @@ import SearchInput from './Search/SearchInput';
 
 const PhonebookList = ({ onSelectContact }) => {
   const [contacts, setContacts] = useState([]);
-  const [filteredContacts, setFilteredContacts] = useState([]);
+  const [filter, setFilter] = useState("");
 
   const handleSearch = (query) => {
-    const filtered = contacts.filter(contact => {
-      return contact.Info.Name.toLowerCase().includes(query.toLowerCase());
-    });
-    setFilteredContacts(filtered);
+      setFilter(query);
   };
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getContacts();
+        const data = await getContacts(filter);
         setContacts(data);
       } catch (error) {
         console.log("Unable to fetch contacts data");
       }
     };
     fetchData();
-  }, []);
+  }, [filter]);
 
   const handleDelete = async (id) => {
     await deleteContact(id);
-    setContacts(contacts.filter(c => c.id !== id));
   };
 
   return (
@@ -66,7 +62,7 @@ const PhonebookList = ({ onSelectContact }) => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {filteredContacts.map((contact) => (
+                {contacts.map((contact) => (
                   <tr key={contact.ID}>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{contact.Info.Name}</td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{contact.Info.DefaultEmail.EmailAddress}</td>

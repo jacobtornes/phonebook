@@ -23,11 +23,11 @@ export const getOneContact = async (id) =>
   fetchWithToken(`${API_BASE_URL}/${id}`);
 
 export const getContacts = async (search) => {
-  let filter = ""
-  if (search) {
-    filter = `&filter=contains(Info.Name',${search}')`
-  }
-  return fetchWithToken(`${API_BASE_URL}?expand=Info,Info.InvoiceAddress,Info.DefaultPhone,Info.DefaultEmail,Info.DefaultAddress&hateoas=false${filter}`);
+let filter = new URLSearchParams('expand=Info,Info.InvoiceAddress,Info.DefaultPhone,Info.DefaultEmail,Info.DefaultAddress&hateoas=false');
+ if (search) {
+    filter.append('filter', `contains(Info.Name,'${search}')`);
+  } 
+  return fetchWithToken(`${API_BASE_URL}?${filter}`);
 }
 
 export const createContact = async (contact) =>
