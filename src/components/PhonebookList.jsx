@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Confetti from "react-confetti";
 import { getContacts, deleteContact } from "../api";
 import SearchInput from "./Search/SearchInput";
 import AddContact from "./Contact/AddContact";
@@ -9,6 +10,7 @@ const PhonebookList = ({ onSelectContact }) => {
   const [contacts, setContacts] = useState([]);
   const [refresh, setRefresh] = useState(null);
   const [filter, setFilter] = useState("");
+  const [showConfetti, setShowConfetti] = useState(false); // New state for confetti
 
   const handleSearch = (query) => {
     setFilter(query);
@@ -33,6 +35,7 @@ const PhonebookList = ({ onSelectContact }) => {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
+      {showConfetti && <Confetti />}
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <SearchInput onSearch={handleSearch} />
@@ -49,7 +52,15 @@ const PhonebookList = ({ onSelectContact }) => {
         <AddContact
           open={isModalOpen}
           setOpen={setModalOpen}
-          onContactAdded={() => setRefresh(new Date().getTime())}
+          onContactAdded={() => {
+            setShowConfetti(true); // Trigger confetti
+
+            // Hide confetti after 2 seconds
+            setTimeout(() => {
+              setShowConfetti(false);
+            }, 4000);
+            setRefresh(new Date().getTime());
+          }}
         />
       </div>
       <div className="mt-8 flow-root">
@@ -58,12 +69,6 @@ const PhonebookList = ({ onSelectContact }) => {
             <table className="min-w-full divide-y divide-gray-300">
               <thead>
                 <tr>
-                  <th
-                    scope="col"
-                    className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
-                  >
-                    ID
-                  </th>
                   <th
                     scope="col"
                     className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
@@ -93,10 +98,6 @@ const PhonebookList = ({ onSelectContact }) => {
               <tbody className="divide-y divide-gray-200">
                 {contacts.map((contact, index) => (
                   <tr key={index + contact.ID}>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      {contact.ID}
-                    </td>
-
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                       {contact?.Info?.Name}
                     </td>
