@@ -15,7 +15,10 @@ const fetchWithToken = async (url, options = {}) => {
   if (!response.ok) {
     throw new Error(`API request failed: ${response.statusText}`);
   }
-
+ // Handle DELETE method where response body may be empty
+ if (response.status === 204 || options.method === 'DELETE') {
+  return null;
+}
   return response.json();
 };
 
