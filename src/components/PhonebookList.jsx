@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { getContacts, deleteContact } from '../api';
 import SearchInput from './Search/SearchInput';
+import AddContact from './Contact/AddContact';
+
+
+
+
+
+
 
 const PhonebookList = ({ onSelectContact }) => {
+
+  const [isModalOpen, setModalOpen] = useState(false);
   const [contacts, setContacts] = useState([]);
   const [filter, setFilter] = useState("");
 
@@ -26,6 +35,12 @@ const PhonebookList = ({ onSelectContact }) => {
     await deleteContact(id);
   };
 
+  const onContactAdded = (newContact) => {
+    // Optimistically add the new contact to the state
+    setContacts(prevContacts => [...prevContacts, newContact]);
+  };
+  
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -34,12 +49,16 @@ const PhonebookList = ({ onSelectContact }) => {
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <button
+            onClick={() => setModalOpen(true)}
             type="button"
             className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             Add Contact
           </button>
         </div>
+
+        <AddContact open={isModalOpen} setOpen={setModalOpen} onContactAdded={onContactAdded}/>
+
       </div>
       <div className="mt-8 flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -62,8 +81,8 @@ const PhonebookList = ({ onSelectContact }) => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {contacts.map((contact) => (
-                  <tr key={contact.ID}>
+                {contacts.map((contact,index) => (
+                  <tr key={index + contact?.ID}>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{contact?.Info?.Name}</td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{contact?.Info?.DefaultEmail.EmailAddress}</td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{contact?.Info?.DefaultPhone.Number}</td>

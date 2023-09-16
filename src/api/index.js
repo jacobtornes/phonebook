@@ -30,11 +30,23 @@ let filter = new URLSearchParams('expand=Info,Info.InvoiceAddress,Info.DefaultPh
   return fetchWithToken(`${API_BASE_URL}?${filter}`);
 }
 
-export const createContact = async (contact) =>
-  fetchWithToken(`${API_BASE_URL}`, {
+export const createContact = async ({name,email,phone}) => {
+  const newContact = {
+    "Info": {
+      "Name": name,
+      "DefaultPhone": {
+          "Number": phone
+        },
+      "DefaultEmail": {
+          "EmailAddress": email
+        }
+    },
+  }
+  return fetchWithToken(`${API_BASE_URL}`, {
     method: 'POST',
-    body: JSON.stringify(contact),
+    body: JSON.stringify(newContact),
   });
+}
 
 export const updateContact = async (id, updatedContact) =>
   fetchWithToken(`${API_BASE_URL}/${id}`, {
