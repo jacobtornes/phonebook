@@ -4,9 +4,12 @@ import { getContacts, deleteContact } from "../api";
 import SearchInput from "./Search/SearchInput";
 import AddContact from "./Contact/AddContact";
 import { TrashIcon } from "@heroicons/react/24/solid";
+import EditContact from "./Edit/EditContact";
 
 const PhonebookList = ({ onSelectContact }) => {
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [editContactData, setEditContactData] = useState(null);
+  const [isAddContactModalOpen, setAddContactModalOpen] = useState(false);
+  const [isEditContactModalOpen, setEditContactModalOpen] = useState(false);
   const [contacts, setContacts] = useState([]);
   const [refresh, setRefresh] = useState(null);
   const [filter, setFilter] = useState("");
@@ -42,7 +45,7 @@ const PhonebookList = ({ onSelectContact }) => {
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <button
-            onClick={() => setModalOpen(true)}
+            onClick={() => setAddContactModalOpen(true)}
             type="button"
             className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
@@ -50,8 +53,8 @@ const PhonebookList = ({ onSelectContact }) => {
           </button>
         </div>
         <AddContact
-          open={isModalOpen}
-          setOpen={setModalOpen}
+          open={isAddContactModalOpen}
+          setOpen={setAddContactModalOpen}
           onContactAdded={() => {
             setShowConfetti(true); // Trigger confetti
 
@@ -59,6 +62,15 @@ const PhonebookList = ({ onSelectContact }) => {
             setTimeout(() => {
               setShowConfetti(false);
             }, 4000);
+            setRefresh(new Date().getTime());
+          }}
+        />
+        <EditContact
+          open={isEditContactModalOpen}
+          setOpen={setEditContactModalOpen}
+          editData={editContactData}
+          onContactUpdated={() => {
+            setEditContactData(null);
             setRefresh(new Date().getTime());
           }}
         />
@@ -108,13 +120,17 @@ const PhonebookList = ({ onSelectContact }) => {
                       {contact?.Info?.DefaultPhone.Number}
                     </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                      <a
-                        href="#"
+                      <button
+                        onClick={() => {
+                          setEditContactData(contact);
+                          setEditContactModalOpen(true);
+                        }}
+                        type="button"
                         className="text-indigo-600 hover:text-indigo-900"
                       >
                         Edit
                         <span className="sr-only">, {contact?.Info?.Name}</span>
-                      </a>
+                      </button>
                     </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                       <button

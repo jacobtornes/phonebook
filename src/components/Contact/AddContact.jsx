@@ -22,6 +22,9 @@ export default function AddContact({ open, setOpen, onContactAdded}) {
       console.log(createdContact);
       onContactAdded(createdContact);
       setOpen(false);
+      setName('');
+      setEmail('');
+      setPhone('');
     } catch (error) {
       console.error('Could not create contact:', error);
     }

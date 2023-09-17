@@ -1,6 +1,6 @@
-import { getAccessToken } from '../utils/oidcConfig';
+import { getAccessToken } from "../utils/oidcConfig";
 
-const API_BASE_URL = 'https://test-api.softrig.com/api/biz/contacts';
+const API_BASE_URL = "https://test-api.softrig.com/api/biz/contacts";
 
 const fetchWithToken = async (url, options = {}) => {
   const token = await getAccessToken();
@@ -15,10 +15,10 @@ const fetchWithToken = async (url, options = {}) => {
   if (!response.ok) {
     throw new Error(`API request failed: ${response.statusText}`);
   }
- // Handle DELETE method where response body may be empty
- if (response.status === 204 || options.method === 'DELETE') {
-  return null;
-}
+  // Handle DELETE method where response body may be empty
+  if (response.status === 204 || options.method === "DELETE") {
+    return null;
+  }
   return response.json();
 };
 
@@ -26,38 +26,63 @@ export const getOneContact = async (id) =>
   fetchWithToken(`${API_BASE_URL}/${id}`);
 
 export const getContacts = async (search) => {
-let filter = new URLSearchParams('expand=Info,Info.InvoiceAddress,Info.DefaultPhone,Info.DefaultEmail,Info.DefaultAddress&hateoas=false');
- if (search) {
-    filter.append('filter', `contains(Info.Name,'${search}')`);
-  } 
-  return fetchWithToken(`${API_BASE_URL}?${filter}`);
-}
-
-export const createContact = async ({name,email,phone}) => {
-  const newContact = {
-    "Info": {
-      "Name": name,
-      "DefaultPhone": {
-          "Number": phone
-        },
-      "DefaultEmail": {
-          "EmailAddress": email
-        }
-    },
+  let filter = new URLSearchParams(
+    "expand=Info,Info.InvoiceAddress,Info.DefaultPhone,Info.DefaultEmail,Info.DefaultAddress&hateoas=false"
+  );
+  if (search) {
+    filter.append("filter", `contains(Info.Name,'${search}')`);
   }
+  return fetchWithToken(`${API_BASE_URL}?${filter}`);
+};
+
+export const createContact = async ({ name, email, phone }) => {
+  const newContact = {
+    Info: {
+      Name: name,
+      DefaultPhone: {
+        Number: phone,
+      },
+      DefaultEmail: {
+        EmailAddress: email,
+      },
+    },
+  };
   return fetchWithToken(`${API_BASE_URL}`, {
-    method: 'POST',
+    method: "POST",
     body: JSON.stringify(newContact),
   });
-}
+};
 
-export const updateContact = async (id, updatedContact) =>
-  fetchWithToken(`${API_BASE_URL}/${id}`, {
-    method: 'PUT',
+export const updateContact = async (
+  id,
+  infoId,
+  emailId,
+  phoneId,
+  { name = "", phone = "", email = "" }
+) => {
+  const updatedContact = {
+    ID: id,
+    Info: {
+      ID: infoId,
+      Name: name,
+      DefaultPhone: {
+        ID: phoneId,
+        Number: phone,
+      },
+      DefaultEmail: {
+        ID: emailId,
+        EmailAddress: email,
+      },
+    },
+  };
+  
+  return fetchWithToken(`${API_BASE_URL}/${id}`, {
+    method: "PUT",
     body: JSON.stringify(updatedContact),
   });
+};
 
 export const deleteContact = async (id) =>
   fetchWithToken(`${API_BASE_URL}/${id}`, {
-    method: 'DELETE',
+    method: "DELETE",
   });

@@ -2,35 +2,47 @@ import { Fragment, useRef, useState, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { updateContact } from "../../api";
 
-export default function EditContact({ open, setOpen, existingContact, onContactUpdated }) {
+export default function EditContact ({ open, setOpen, editData, onContactUpdated}) {
+  
   const cancelButtonRef = useRef(null);
 
-  // Initialize form state from the existing contact
-  const [name, setName] = useState(existingContact.name);
-  const [email, setEmail] = useState(existingContact.email);
-  const [phone, setPhone] = useState(existingContact.phone);
+  const [name, setName] = useState(editData ? editData.Info.Name: '');
+  const [email, setEmail] = useState(editData ?editData.Info.DefaultEmail.EmailAddress: '');
+  const [phone, setPhone] = useState(editData ? editData.Info.DefaultPhone.Number: '');
+  const [id, setId] = useState(editData ? editData.ID: 0);
+  const [infoId, setInfoId] = useState(editData ? editData.Info.ID: 0);
+  const [emailId, setEmailId] = useState(editData ? editData.Info.DefaultEmailID: 0);
+  const [phoneId, setPhoneId] = useState(editData ? editData.Info.DefaultPhoneID: 0);
 
   useEffect(() => {
-    setName(existingContact.name);
-    setEmail(existingContact.email);
-    setPhone(existingContact.phone);
-  }, [existingContact]);
+    if (editData) {
+      console.log('EditData', editData)
+      setName(editData.Info.Name);
+      setEmail(editData.Info.DefaultEmail.EmailAddress);
+      setPhone(editData.Info.DefaultPhone.Number);
+      setId(editData.ID);
+      setInfoId(editData.Info.ID);
+      setEmailId(editData.Info.DefaultEmailID);
+      setPhoneId(editData.Info.DefaultPhoneID);
+    }
+  }, [editData]);
 
-  // Handle form submit
   const handleSubmit = async () => {
+    console.log('handleSubmit in EditContact')
     try {
       const updatedContact = {
         name,
         email,
         phone,
       };
-
-      const result = await updateContact(existingContact.id, updatedContact);
+      console.log('Updating contact', id, infoId, updatedContact);
+      const result = await updateContact(id, infoId, emailId, phoneId, updatedContact);
       console.log(result);
       onContactUpdated(result);
       setOpen(false);
+      console.log(result);
     } catch (error) {
-      console.error('Could not update contact:', error);
+      console.log("Could not update contact:", error);
     }
   };
 
@@ -67,7 +79,7 @@ export default function EditContact({ open, setOpen, existingContact, onContactU
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
                 <div>
-                <label
+                  <label
                     htmlFor="name"
                     className="block text-sm font-medium leading-6 text-gray-900"
                   >
@@ -146,8 +158,4 @@ export default function EditContact({ open, setOpen, existingContact, onContactU
     </Transition.Root>
   );
 }
-
-
-  // ... rest of the component stays largely the same as AddContact
-  // but replace "Add" button text with "Update" and the corresponding handler
 
