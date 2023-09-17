@@ -1,1 +1,1 @@
-  This is a phonebook CRUD APP created with the SoftRig API. 
+  This is a phonebook CRUD App created with the SoftRig API. 
