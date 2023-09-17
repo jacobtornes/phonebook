@@ -6,7 +6,7 @@ import AddContact from "./Contact/AddContact";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import EditContact from "./Edit/EditContact";
 
-const PhonebookList = ({ onSelectContact }) => {
+const PhonebookList = () => {
   const [editContactData, setEditContactData] = useState(null);
   const [isAddContactModalOpen, setAddContactModalOpen] = useState(false);
   const [isEditContactModalOpen, setEditContactModalOpen] = useState(false);
