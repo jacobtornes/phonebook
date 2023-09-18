@@ -8,7 +8,7 @@ const config = {
     production: false,
     base_url: 'https://test.softrig.com/api/',
     authority: 'https://test-login.softrig.com',
-    client_id: '631c2c2c-8832-4146-a220-ed1eced95203',
+    client_id: '496e3ac8-e77c-432c-83e6-e4de524d9b4d',
     redirect_uri: window.location.origin + '/callback',
     automaticSilentRenew: true,
     response_type: 'code',
